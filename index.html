@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Merc's Grotto</title>
+  <link href="https://fonts.googleapis.com/css2?family=Caesar+Dressing&family=Special+Elite&display=swap" rel="stylesheet" />
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #000;
+      color: #fff;
+      font-family: 'Special Elite', serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    /* ── Page wrapper ── */
+    .page {
+      width: 100%;
+      max-width: 480px;
+    }
+
+    /* ══════════════════════════════
+       PROFILE CARD
+    ══════════════════════════════ */
+    .card {
+      border: 3px solid #8b1a1a;
+      background: #000;
+    }
+
+    /* Site title */
+    .site-title {
+      font-family: 'Caesar Dressing', cursive;
+      font-size: 2.4rem;
+      color: #EDA624;
+      text-align: center;
+      padding: 14px 0 10px;
+      letter-spacing: 2px;
+    }
+
+    /* Nav bar */
+    .nav {
+      background: #1a1a1a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      padding: 10px 0;
+      border-bottom: 3px solid #8b1a1a;
+    }
+
+    .nav a {
+      font-family: 'Special Elite', serif;
+      font-size: 0.95rem;
+      color: #bbb;
+      text-decoration: none;
+      padding: 0 18px;
+      transition: color 0.2s;
+    }
+    .nav a:hover, .nav a.active { color: #fff; }
+
+    .nav-sep {
+      color: #555;
+      font-size: 1rem;
+    }
+
+    /* Profile section */
+    .profile-section {
+      background: #c0221e;
+      padding: 24px;
+      display: grid;
+      grid-template-columns: 145px 1fr;
+      gap: 33px;
+    }
+
+    .profile-img {
+      width: 145px;
+      height: 100%;
+      background: url('profile.jpeg');
+      background-size: cover;
+      background-position: center;
+      border: 3px solid #000;
+      flex-shrink: 0;
+    }
+
+    .profile-info {
+      font-family: 'Special Elite', serif;
+      text-align: justify;
+      font-size: 13px;
+      color: #1a1a1a;
+      line-height: 13px;
+    }
+
+    .profile-info span { display: block; }
+
+    /* Tags + contact + second image */
+    .profile-bottom {
+      background: #c0221e;
+      padding: 0 24px 24px;
+      display: grid;
+      grid-template-columns: 165px 1fr;
+      gap: 24px;
+    }
+
+    .tags { display: flex; flex-direction: column; gap: 6px; }
+
+    .tag {
+      font-family: 'Caesar Dressing', serif;
+      font-size: 0.85rem;
+      font-weight: bold;
+      text-align: center;
+      padding: 5px 10px;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: opacity 0.2s;
+    }
+    .tag:hover { opacity: 0.85; }
+
+    .tag-dark  {
+      background: url("punkrock.gif");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      height: 32px;
+      color: #fff;
+      border: 2px solid #000;
+      }
+    .tag-red   {
+      background: url("gyaru.gif");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      height: 32px;
+      color: #fff;
+      border: 2px solid #000;
+      }
+    .tag-light {
+      background: url("futuristic.gif");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      height: 32px;
+      color: #fff;
+      border: 2px solid #000;
+      }
+
+    .contacts-block {
+      margin-top: 10px;
+    }
+    .contacts-title {
+      font-family: 'Caesar Dressing', cursive;
+      font-size: 1.3rem;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+    .contacts-block p {
+      font-family: 'Special Elite', serif;
+      font-size: 9px;
+      color: #000;
+      line-height: 10px;
+    }
+
+    .second-img {
+      width: 100%;
+      height: 180px;
+      background: #e8e8e8;
+      border: 3px solid #000;
+      align-self: start;
+    }
+    
+    /* Weekly Memes widget */
+    .weekly-memes {
+      background: #f0ede0;
+      border: 3px solid #222;
+      padding: 10px;
+      align-self: start;
+      color: #111;
+      text-align: center;
+    }
+
+    .weekly-memes-title {
+      font-family: 'Caesar Dressing', cursive;
+      font-size: 1rem;
+      font-weight: bold;
+      color: #111;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .meme-preview {
+      width: 100%;
+      height: 90px;
+      background: #999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Special Elite', serif;
+      font-size: 0.8rem;
+      color: #fff;
+      margin-bottom: 8px;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .meme-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: none;
+    }
+
+    .meme-placeholder-text { pointer-events: none; }
+
+    .download-btn {
+      display: block;
+      width: 100%;
+      background: #d4a017;
+      color: #111;
+      font-family: 'Special Elite', serif;
+      font-size: 0.82rem;
+      border: none;
+      padding: 7px 4px;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+    .download-btn:hover { background: #e8b420; }
+
+    /* Footer of card */
+    .card-footer {
+      background: #1a1a1a;
+      border-top: 2px solid #8b1a1a;
+      text-align: center;
+      font-family: 'Special Elite', serif;
+      font-size: 0.72rem;
+      color: #aaa;
+      padding: 8px;
+    }
+
+    /* ══════════════════════════════
+       BLOG LINKS
+    ══════════════════════════════ */
+    .blog-links {
+      padding: 60px 80px;
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+    }
+
+    .blog-btn {
+      display: block;
+      background: #EDA624;
+      color: #111;
+      font-family: 'Special Elite', serif;
+      font-size: 20px;
+      text-align: center;
+      padding: 14px 20px;
+      text-decoration: none;
+      cursor: pointer;
+      border: none;
+      width: 100%;
+      transition: background 0.2s, transform 0.1s;
+    }
+    .blog-btn:hover {
+      background: #e8b420;
+      transform: translateY(-1px);
+    }
+    .blog-btn:active { transform: translateY(0); }
+
+   
+    /* ══════════════════════════════
+       INTELLECTUAL PROPERTIES
+    ══════════════════════════════ */
+    .ip-section {
+      padding: 10px 0 40px;
+      text-align: center;
+    }
+
+    .ip-title {
+      font-family: 'Caesar Dressing', cursive;
+      font-size: 2rem;
+      color: #fff;
+      line-height: 1.2;
+      margin-bottom: 0;
+      padding: 10px 24px 14px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* ── Red crawler / ticker ── */
+    .ip-crawler-wrap {
+      background: #525252;
+      overflow: hidden;
+      white-space: nowrap;
+      margin-top: 10px;
+      padding: 6px 0;
+    }
+
+    .ip-crawler-inner {
+      display: inline-block;
+      animation: crawl 300s linear infinite;
+      font-family: 'Special Elite', serif;
+      font-size: 0.78rem;
+      color: #C6C6C6;
+      letter-spacing: 0.5px;
+    }
+
+    @keyframes crawl {
+      0%   { transform: translateX(0%); }
+      100% { transform: translateX(-100%); }
+    }
+
+    /* ── Characters + title card scene ── */
+    .ip-scene {
+      position: relative;
+      width: 100%;
+      min-height: 260px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      background: #0a0a0a;
+      overflow: hidden;
+    }
+
+    /* Title card — behind characters, centred */
+    .ip-titlecard {
+      position: absolute;
+      top: 20%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 100%;
+      max-width: 500px;
+      z-index: 1;
+    }
+
+    .ip-titlecard-img {
+      width: 100%;
+      height: auto;
+      display: block;
+      min-height: 50px;
+    }
+
+    /* Characters flank the title card */
+    .ip-char {
+      position: relative;
+      z-index: 2;
+      width: 100 50%;
+      max-width: 300px;
+      flex-shrink: 0;
+      margin: 0 -60px;
+    }
+
+    .ip-char img {
+      width: 100%;
+      height: auto;
+      display: block;
+      min-height: 100px;
+    }
+    
+    .ip-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 3;
+      padding: 40px 100px 50px;
+      text-align: center;
+    }
+
+    /* ── Synopsis ── */
+    .ip-synopsis {
+      background: transparent;
+      padding: 0 0 12px;
+      font-family: 'Special Elite', serif;
+      font-size: 9px;
+      line-height: 1.75;
+      color: #e8e8e8;
+      text-align: justify;
+      z-index: 3;
+    }
+
+    /* ── Read button ── */
+    .ip-read-btn {
+      display: inline-block;
+      background: #d4a017;
+      color: #111;
+      font-family: 'Caesar Dressing', cursive;
+      font-size: 1.3rem;
+      letter-spacing: 2px;
+      padding: 10px 48px;
+      margin: 18px auto 0;
+      text-decoration: none;
+      cursor: pointer;
+      border: none;
+      transition: background 0.2s, transform 0.1s;
+    }
+    .ip-read-btn:hover  { background: #e8b420; transform: translateY(-1px); }
+    .ip-read-btn:active { transform: translateY(0); }
+
+    /* ══════════════════════════════
+       RESPONSIVE — desktop centering
+    ══════════════════════════════ */
+    @media (min-width: 600px) {
+      .page {
+        margin: 30px auto;
+        box-shadow: 0 0 40px rgba(180,30,30,0.18);
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- ── Profile Card ── -->
+  <div class="site-title">Merc's Grotto</div>
+  <div class="card">
+
+    <nav class="nav">
+      <a href="#" class="active">home</a>
+      <span class="nav-sep">|</span>
+      <a href="#">gallery</a>
+      <span class="nav-sep">|</span>
+      <a href="#">bulls</a>
+    </nav>
+
+    <!-- top row: avatar + bio -->
+    <div class="profile-section">
+      <div class="profile-img"></div>
+      <div class="profile-info">
+        <span>Name: Mercuswar</span>
+        <span>Aliases: Mercus, Merc</span>
+        <span>Sex: Female</span>
+        <span>Age: between 0 to 100 years</span>
+        <span>M.O.: Expressing a lot of unpopular opinions, "well that's just my thoughts."</span>
+        <span>Marks: A single mole on the forehead, "tattoos? that gotta hurt, I don't do that sh*t."</span>
+      </div>
+    </div>
+
+    <!-- bottom row: tags+contacts / second image -->
+    <div class="profile-bottom">
+      <div>
+        <div class="tags">
+          <div class="tag tag-dark"></div>
+          <div class="tag tag-red"></div>
+          <div class="tag tag-light"></div>
+        </div>
+        <div class="contacts-block">
+          <div class="contacts-title">Contacts</div>
+          <p>
+            Email: real.mercus@gmail.com<br>
+            IG: @mer_cuswar; @mer_captan<br>
+            Tiktok: @mercuswarovski
+          </p>
+        </div>
+      </div>
+      <div class="weekly-memes">
+        <div class="weekly-memes-title">Weekly Memes</div>
+        <div class="meme-preview" id="memePreview">
+          <img id="memeImg" src="" alt="Weekly meme" />
+          <span class="meme-placeholder-text" id="memePlaceholder">[jpeg]</span>
+        </div>
+        <a class="download-btn" id="downloadBtn" download>download jpeg</a>
+      </div>
+    </div>
+
+    <div class="card-footer">
+      Merc's Grotto © 2024–forever. Mercuswar.
+    </div>
+
+  </div><!-- /.card -->
+
+  <!-- ── Blog navigation buttons ── -->
+  <div class="blog-links">
+    <a class="blog-btn" href="#">Comic Journal</a>
+    <a class="blog-btn" href="#">Media Reviews</a>
+    <a class="blog-btn" href="#">Personal Essays</a>
+    <a class="blog-btn" href="#">Resources</a>
+  </div>
+
+  <!-- ── Intellectual Properties ── -->
+  <div class="ip-section">
+
+    <div class="ip-title">Intelectual<br>Properties</div>
+
+    <!-- 1. Red crawler — edit the text between the · separators -->
+    <div class="ip-crawler-wrap">
+      <span class="ip-crawler-inner">
+        Title: "Dossier Lulu" &nbsp;·&nbsp; romance &nbsp;·&nbsp; comedy &nbsp;·&nbsp; action (15+) &nbsp;·&nbsp; Language: IDN &nbsp;·&nbsp; Status: Hiatus &nbsp;·&nbsp; Komik ini adalah karya fiksi. Nama, karakter, organisasi, institusi, peristiwa, dan tempat yang muncul dalam cerita merupakan hasil imajinasi kreator atau digunakan secara fiktif. Kemiripan dengan individu, kelompok, atau kejadian nyata tidak disengaja. Cerita ini dapat memuat: Kekerasan non-grafis, Konflik antar remaja, Perundungan (bullying), Kenakalan remaja, Tema psikologis dan sosial, Keyakinan, takhayul, atau praktik budaya yang ditampilkan sebagai bagian dari karakter dan alur cerita. Pandangan, tindakan, dan ucapan para tokoh tidak selalu mencerminkan pandangan kreator. Kehadiran suatu perilaku, keyakinan, atau ideologi dalam cerita tidak berarti dukungan atau pembenaran terhadap hal tersebut. Komik ini tidak bermaksud merendahkan, menstereotipkan, atau mendiskriminasi individu maupun kelompok berdasarkan suku, agama, ras, budaya, jenis kelamin, kondisi ekonomi, atau latar belakang lainnya. Pembaca diharapkan menggunakan kebijaksanaan dalam menikmati karya ini. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Title: "Dossier Lulu" &nbsp;·&nbsp; romance &nbsp;·&nbsp; comedy &nbsp;·&nbsp; action (15+) &nbsp;·&nbsp; Language: IDN &nbsp;·&nbsp; Status: Hiatus &nbsp;·&nbsp; Komik ini adalah karya fiksi. Nama, karakter, organisasi, institusi, peristiwa, dan tempat yang muncul dalam cerita merupakan hasil imajinasi kreator atau digunakan secara fiktif. Kemiripan dengan individu, kelompok, atau kejadian nyata tidak disengaja. Cerita ini dapat memuat: Kekerasan non-grafis, Konflik antar remaja, Perundungan (bullying), Kenakalan remaja, Tema psikologis dan sosial, Keyakinan, takhayul, atau praktik budaya yang ditampilkan sebagai bagian dari karakter dan alur cerita. Pandangan, tindakan, dan ucapan para tokoh tidak selalu mencerminkan pandangan kreator. Kehadiran suatu perilaku, keyakinan, atau ideologi dalam cerita tidak berarti dukungan atau pembenaran terhadap hal tersebut. Komik ini tidak bermaksud merendahkan, menstereotipkan, atau mendiskriminasi individu maupun kelompok berdasarkan suku, agama, ras, budaya, jenis kelamin, kondisi ekonomi, atau latar belakang lainnya. Pembaca diharapkan menggunakan kebijaksanaan dalam menikmati karya ini. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      </span>
+    </div>
+
+    <div class="ip-scene">
+      <!-- Character 1 (left) -->
+      <div class="ip-char ip-char1">
+        <img src="dlulu/fullbodylulu.png" alt="Character 1" />
+      </div>
+
+      <!-- Title card — sits behind both characters via z-index -->
+      <div class="ip-titlecard">
+        <img class="ip-titlecard-img" src="dlulu/title.png" alt="Dossier Lulu title card" />
+      </div>
+
+      <!-- Character 2 (right) -->
+      <div class="ip-char ip-char2">
+        <img src="dlulu/fullbodymalik.png" alt="Character 2" />
+      </div>
+      <div class="ip-overlay">
+      <!-- 3. Synopsis -->
+        <p class="ip-synopsis">
+          LULU, siswi SMA baru yang punya jurnal rahasia berisi data lengkap tentang cowok-cowok jagoan SMA Jaya Drata, tidak pernah mengira kalau jurnalnya akan dibaca orang lain&mdash;apalagi oleh MALIK, cowok absurd yang punya misi menjungkirbalikkan sekolah. Alih-alih mengancam atau menyebarkannya, Malik malah mengajak Lulu bekerja sama. Alasannya? Dia butuh kumpulan dosir Lulu itu untuk membangkitkan klik-klik preman yang sudah tobat.
+        </p>
+    
+        <!-- 4. Read button — set href to your webcomic URL -->
+        <a class="ip-read-btn" href="#">Read</a>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /.page -->
+
+<script>
+  // ── Weekly Meme Loader, feel free to steal─────────────────────────────────
+  //
+  // HOW IT WORKS:
+  //   • Put your meme images inside a folder called  "memes/"  next to this
+  //     HTML file (e.g.  memes/img1.jpeg,  memes/img2.jpeg,  memes/img3.jpeg …)
+  //   • Edit TOTAL_MEMES below to match how many images you have.
+  //   • Every Monday the widget automatically advances to the next image.
+  //     When it reaches the last one it wraps back to img1.jpg.
+  //
+  // FOLDER STRUCTURE EXPECTED:
+  //  e.g.
+  //   index.html
+  //   memes/
+  //     img1.jpeg
+  //     img2.jpeg
+  //     img3.jpeg
+  //     …
+  // ───────────────────────────────────────────────────────────────────────────
+
+  const TOTAL_MEMES = 1;          // change to however many memes u have, dont put more than what u have or else it will try to show img4 when u only have 3 imgs
+  const MEMES_FOLDER = 'memes/';   // folder name (relative to this HTML file)
+  const MEME_PREFIX  = 'img';      // filename prefix  (img1.jpeg, img2.jpeg …)
+  const MEME_EXT     = '.jpeg';     //file extension
+
+  /**
+   * Returns an ISO week number (1–53) for a given date,
+   * anchored to Monday as the start of the week.
+   */
+  function getISOWeekNumber(date) {
+    const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+    // Set to nearest Thursday (makes the week number stable across year boundaries)
+    d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
+    const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+    return Math.ceil(((d - yearStart) / 86400000 + 1) / 7);
+  }
+
+  /**
+   * Picks the meme index (0-based) for the current week.
+   * Uses the ISO week number so it resets cleanly each year
+   * and always changes on Monday.
+   */
+  function getCurrentMemeIndex() {
+    const week = getISOWeekNumber(new Date()); // 1–53
+    return (week - 1) % TOTAL_MEMES;           // 0-based, wraps at TOTAL_MEMES
+  }
+
+  // ── DOM refs ──
+  const memeImg         = document.getElementById('memeImg');
+  const memePlaceholder = document.getElementById('memePlaceholder');
+  const downloadBtn     = document.getElementById('downloadBtn');
+
+  // ── Build this week's image path ──
+  const index    = getCurrentMemeIndex();       // 0-based
+  const fileNum  = index + 1;                   // img1, img2 …
+  const memeSrc  = `${MEMES_FOLDER}${MEME_PREFIX}${fileNum}${MEME_EXT}`;
+
+  // ── Load the image ──
+  memeImg.src = memeSrc;
+
+  memeImg.addEventListener('load', () => {
+    memeImg.style.display = 'block';
+    memePlaceholder.style.display = 'none';
+    // Wire up the download button once the image is confirmed to exist
+    downloadBtn.href     = memeSrc;
+    downloadBtn.download = `weekly-meme-${MEME_PREFIX}${fileNum}${MEME_EXT}`;
+    downloadBtn.style.pointerEvents = 'auto';
+    downloadBtn.style.opacity = '1';
+  });
+
+  memeImg.addEventListener('error', () => {
+    // Image not found — keep the placeholder visible
+    memePlaceholder.textContent = '[image not found]';
+    downloadBtn.style.pointerEvents = 'none';
+    downloadBtn.style.opacity = '0.45';
+    console.warn(`Weekly meme not found: ${memeSrc}`);
+  });
+
+  // Start in a "disabled" visual state until the image loads
+  downloadBtn.style.pointerEvents = 'none';
+  downloadBtn.style.opacity = '0.45';
+</script>
+
+</body>
+</html>
