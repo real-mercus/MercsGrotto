@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dossier Lulu</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+  /* ============================================================
+   TOKENS
+   ============================================================ */
+:root {
+  --color-bg: #000000;
+  --color-banner-from: #7a1f5e;
+  --color-banner-to: #4a1238;
+  --color-banner-placeholder: #FF60C7;
+
+  --color-romance: #FF60C7;
+  --color-comedy: #FFCA2D;
+  --color-action: #FF2D2D;
+
+  --color-text: #FFFFFF;
+  --color-text-dim: #9A9A9A;
+  --color-text-faint: #6B6B6B;
+
+  --color-panel: #141414;
+  --color-panel-hover: #1f1f1f;
+  --color-border: #2A2A2A;
+
+  --color-accent-red: #C81818;
+
+  --font-main: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-title: 'Great Vibes', cursive;
+
+  --radius-sm: 4px;
+  --radius-md: 8px;
+
+  --episode-thumb-light: #E8E8E8;
+  --episode-thumb-mid: #BFBFBF;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-main);
+  -webkit-font-smoothing: antialiased;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+ul {
+  list-style: none;
+}
+
+/* ============================================================
+   PAGE / LAYOUT SHELL
+   ============================================================ */
+.page {
+  max-width: 1400px;
+  margin: 0 auto;
+  min-height: 100vh;
+  background: var(--color-bg);
+}
+
+/* ============================================================
+   BANNER (HEADER)
+   ============================================================ */
+.banner {
+  position: relative;
+  background-image: url('banner.png'); 
+  background-repeat: no-repeat;
+  background-position: center; 
+  background-size: cover;
+  padding: 20px 20px 28px;
+  overflow: hidden;
+}
+
+.icon-btn {
+  background: transparent;
+  border: none;
+  color: var(--color-text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  transition: background 0.15s ease;
+}
+
+.icon-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.icon-btn:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+.back-btn {
+  position: absolute;
+  top: 20px;
+  left: 16px;
+  z-index: 5;
+}
+
+.menu-btn {
+  position: absolute;
+  top: 20px;
+  right: 16px;
+  z-index: 5;
+}
+
+.banner-content {
+  margin-top: 56px;
+}
+
+.genre-pills {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 12px;
+  border-radius: 3px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: #1a1a1a;
+}
+
+.pill-romance {
+  background: var(--color-romance);
+  font-family: var(--font-title);
+  font-size: 16px;
+  font-weight: 400;
+  padding: 6px 14px 4px;
+  color: #fff;
+}
+
+.pill-comedy {
+  background: var(--color-comedy);
+}
+
+.pill-action {
+  background: var(--color-action);
+  color: #1a0000;
+  font-style: italic;
+}
+
+.series-title {
+  font-family: var(--font-title);
+  font-size: 56px;
+  font-weight: 400;
+  color: #fff;
+  line-height: 1;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* ============================================================
+   SIDE MENU
+   ============================================================ */
+.side-menu {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: min(78vw, 340px);
+  background: #000;
+  z-index: 100;
+  transform: translateX(100%);
+  transition: transform 0.3s ease;
+  padding: 20px;
+}
+
+.side-menu.open {
+  transform: translateX(0);
+}
+
+.side-menu-header {
+  display: flex;
+  margin-bottom: 32px;
+}
+
+.side-menu-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.menu-item {
+  background: var(--color-panel);
+  border: none;
+  color: var(--color-text-dim);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 22px 20px;
+  border-radius: var(--radius-sm);
+  text-align: center;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.menu-item:hover,
+.menu-item:focus-visible {
+  background: var(--color-accent-red);
+  color: #fff;
+}
+
+.menu-item:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: -4px;
+}
+
+.menu-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  z-index: 90;
+}
+
+.menu-overlay.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* ============================================================
+   MAIN CONTENT
+   ============================================================ */
+.content {
+  padding: 20px 20px 40px;
+}
+
+.meta-block {
+  margin-top: 10px;
+  margin-bottom: 18px;
+}
+
+.author {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.stats {
+  display: flex;
+  gap: 18px;
+}
+
+.stat {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--color-text-dim);
+}
+
+.stat svg {
+  flex-shrink: 0;
+  opacity: 0.8;
+}
+
+.read-actions {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.btn {
+  flex: 1;
+  padding: 14px 0;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  border: none;
+  text-transform: uppercase;
+  transition: opacity 0.15s ease, transform 0.1s ease;
+}
+
+.btn:hover {
+  opacity: 0.85;
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+.btn-primary {
+  background: #fff;
+  color: #000;
+}
+
+.btn-secondary {
+  background: #000;
+  color: #fff;
+  border: 1px solid #2A2A2A;
+}
+
+/* ============================================================
+   EPISODE LIST
+   ============================================================ */
+.episode-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.episode-item {
+  display: flex;
+  gap: 16px;
+  border-top: 1px solid var(--color-border);
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.episode-item:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.episode-thumb {
+  flex-shrink: 0;
+  width: 92px;
+  height: 92px;
+  background: var(--episode-thumb-mid);
+}
+
+.episode-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+}
+
+.episode-title {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.episode-likes,
+.episode-date {
+  font-size: 12px;
+  color: var(--color-text-faint);
+}
+
+/* ============================================================
+   DESKTOP LAYOUT (>= 900px)
+   ============================================================ */
+@media (min-width: 900px) {
+
+  .banner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 420px;
+    align-items: stretch;
+    padding: 36px 48px 32px;
+    gap: 40px;
+    min-height: 480px;
+  }
+
+  .back-btn {
+    top: 36px;
+    left: 36px;
+  }
+
+  .menu-btn {
+    display: none;
+  }
+
+  .banner-content {
+    margin-top: 96px;
+    align-self: start;
+  }
+
+  .series-title {
+    font-size: 88px;
+  }
+
+  .pill-romance {
+    font-size: 20px;
+  }
+
+  /* Side menu becomes a static panel inside the banner on desktop */
+  .side-menu {
+    position: static;
+    transform: none;
+    width: auto;
+    height: auto;
+    background: transparent;
+    padding: 0;
+    display: flex;
+    align-items: flex-start;
+  }
+
+  .side-menu-header {
+    display: none;
+  }
+
+  .side-menu-nav {
+    width: 100%;
+    margin-top: 0;
+    gap: 16px;
+  }
+
+  .menu-item {
+    padding: 26px 28px;
+    text-align: left;
+    position: relative;
+    font-size: 15px;
+  }
+
+  .menu-item::after {
+    content: "";
+    position: absolute;
+    right: 24px;
+    top: 50%;
+    width: 9px;
+    height: 9px;
+    border-right: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    transform: translateY(-50%) rotate(135deg);
+    opacity: 0;
+    transition: opacity 0.15s ease;
+  }
+
+  .menu-item:hover::after,
+  .menu-item:focus-visible::after {
+    opacity: 1;
+  }
+
+  .menu-item-active {
+    background: var(--color-accent-red);
+    color: #fff;
+  }
+
+  .menu-item-active::after {
+    opacity: 1;
+  }
+
+  .menu-overlay {
+    display: none;
+  }
+
+  /* Content area below the banner on desktop */
+  .content {
+    padding: 28px 48px 56px;
+  }
+
+  .meta-block {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0;
+  }
+
+  .author {
+    font-size: 24px;
+  }
+
+  .stats {
+    gap: 28px;
+  }
+
+  .stat {
+    font-size: 15px;
+  }
+
+  .read-actions {
+    flex: 0 0 auto;
+    justify-content: flex-end;
+    margin: 28px 0 32px;
+  }
+
+  .btn {
+    flex: 0 0 auto;
+    padding: 14px 36px;
+  }
+
+  .episode-list {
+    max-width: 1400px;
+  }
+
+  .episode-thumb {
+    width: 110px;
+    height: 110px;
+  }
+
+  .episode-title {
+    font-size: 16px;
+  }
+
+  .episode-likes,
+  .episode-date {
+    font-size: 13px;
+  }
+}
+
+/* ============================================================
+   REDUCED MOTION
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+  }
+}
+</style>
+  
+</head>
+<body>
+
+<div class="page">
+
+  <!-- ===================== HEADER / BANNER ===================== -->
+  <header class="banner">
+    <button class="icon-btn back-btn" aria-label="Go back">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+    </button>
+
+    <button class="icon-btn menu-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false" aria-controls="sideMenu">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+    </button>
+
+    <div class="banner-content">
+      <div class="genre-pills">
+        <span class="pill pill-romance">Romance</span>
+        <span class="pill pill-comedy">Comedy</span>
+        <span class="pill pill-action">ACTION</span>
+      </div>
+
+      <h1 class="series-title">Dossier Lulu</h1>
+
+      <div class="meta-block">
+        <p class="author">Mercuswar</p>
+      </div>
+      <ul class="stats">
+          <li class="stat">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+            <span>10.234</span>
+          </li>
+          <li class="stat">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+            <span>2.678</span>
+          </li>
+          <li class="stat">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            <span>100</span>
+          </li>
+        </ul>
+    </div>
+  </header>
+
+  <!-- ===================== SIDE MENU (mobile slide-in / desktop panel) ===================== -->
+  <aside class="side-menu" id="sideMenu">
+    <div class="side-menu-header">
+      <button class="icon-btn close-btn" id="closeMenuBtn" aria-label="Close menu">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+      </button>
+    </div>
+    <nav class="side-menu-nav">
+      <button class="menu-item" type="button">Characters</button>
+      <button class="menu-item" type="button">Behind the Scenes</button>
+      <button class="menu-item" type="button">Share</button>
+    </nav>
+  </aside>
+  <div class="menu-overlay" id="menuOverlay"></div>
+
+  <!-- ===================== MAIN CONTENT ===================== -->
+  <main class="content">
+
+    <div class="read-actions">
+      <button class="btn btn-primary" type="button">Read First</button>
+      <button class="btn btn-secondary" type="button">Read Last</button>
+    </div>
+
+    <ul class="episode-list">
+      <li class="episode-item">
+        <div class="episode-thumb" aria-hidden="true"></div>
+        <div class="episode-info">
+          <p class="episode-title">Episode 3</p>
+          <p class="episode-likes">Likes</p>
+          <p class="episode-date">6 Juni 2026</p>
+        </div>
+      </li>
+      <li class="episode-item">
+        <div class="episode-thumb" aria-hidden="true"></div>
+        <div class="episode-info">
+          <p class="episode-title">Episode 2</p>
+          <p class="episode-likes">Likes</p>
+          <p class="episode-date">6 Juni 2026</p>
+        </div>
+      </li>
+      <li class="episode-item">
+        <div class="episode-thumb" aria-hidden="true"></div>
+        <div class="episode-info">
+          <p class="episode-title">Episode 1</p>
+          <p class="episode-likes">Likes</p>
+          <p class="episode-date">6 Juni 2026</p>
+        </div>
+      </li>
+    </ul>
+
+  </main>
+
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const menuBtn = document.getElementById('menuBtn');
+  const closeMenuBtn = document.getElementById('closeMenuBtn');
+  const sideMenu = document.getElementById('sideMenu');
+  const overlay = document.getElementById('menuOverlay');
+
+  function openMenu() {
+    sideMenu.classList.add('open');
+    overlay.classList.add('open');
+    menuBtn.setAttribute('aria-expanded', 'true');
+  }
+  
+  function closeMenu() {
+    sideMenu.classList.remove('open');
+    overlay.classList.remove('open');
+    menuBtn.setAttribute('aria-expanded', 'false');
+  }
+  
+  menuBtn.addEventListener('click', () => {
+    const isOpen = sideMenu.classList.contains('open');
+    isOpen ? closeMenu() : openMenu();
+  });
+  
+  closeMenuBtn.addEventListener('click', closeMenu);
+  overlay.addEventListener('click', closeMenu);
+  
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeMenu();
+  });
+  
+  // On resize to desktop width, ensure mobile-only open state is cleared
+  window.addEventListener('resize', () => {
+    if (window.innerWidth >= 900) {
+      closeMenu();
+    }
+  });
+});
+
+</script>
+</body>
+</html>
