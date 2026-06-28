@@ -1,0 +1,32 @@
+[
+  {
+    "id": 1,
+    "title": "Episode 1",
+    "commentsUrl": "comments.html?ep=1",
+    "pages": [
+      "https://res.cloudinary.com/YOUR_CLOUD_NAME/image/upload/v1/mercs-grotto/ep1/page_01.jpg",
+      "https://res.cloudinary.com/YOUR_CLOUD_NAME/image/upload/v1/mercs-grotto/ep1/page_02.jpg",
+      "https://res.cloudinary.com/YOUR_CLOUD_NAME/image/upload/v1/mercs-grotto/ep1/page_03.jpg"
+    ]
+  },
+  {
+    "id": 2,
+    "title": "Episode 2",
+    "commentsUrl": "comments.html?ep=2",
+    "pages": [
+      "https://res.cloudinary.com/YOUR_CLOUD_NAME/image/upload/v1/mercs-grotto/ep2/page_01.jpg",
+      "https://res.cloudinary.com/YOUR_CLOUD_NAME/image/upload/v1/mercs-grotto/ep2/page_02.jpg",
+      "https://res.cloudinary.com/YOUR_CLOUD_NAME/image/upload/v1/mercs-grotto/ep2/page_03.jpg"
+    ]
+  },
+  {
+    "id": 3,
+    "title": "Episode 3",
+    "commentsUrl": "comments.html?ep=3",
+    "pages": [
+      "https://res.cloudinary.com/YOUR_CLOUD_NAME/image/upload/v1/mercs-grotto/ep3/page_01.jpg",
+      "https://res.cloudinary.com/YOUR_CLOUD_NAME/image/upload/v1/mercs-grotto/ep3/page_02.jpg",
+      "https://res.cloudinary.com/YOUR_CLOUD_NAME/image/upload/v1/mercs-grotto/ep3/page_03.jpg"
+    ]
+  }
+]
