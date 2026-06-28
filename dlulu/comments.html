@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Comments Merc's Grotto</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #f9c6d0;
+      color: #eee;
+      font-family: sans-serif;
+      min-height: 100vh;
+    }
+
+    /* ── header ── */
+    header {
+      background: linear-gradient(135deg, #f9c6d0, #f4a7b9, #e8c4d8);
+      padding: 1rem 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 12px rgba(244, 167, 185, 0.3);
+    }
+
+    .back-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      background: rgba(255,255,255,0.4);
+      border-radius: 50%;
+      text-decoration: none;
+      color: #7a3d50;
+      font-size: 18px;
+      flex-shrink: 0;
+      transition: background 0.15s;
+    }
+    .back-btn:hover { background: rgba(255,255,255,0.65); }
+
+    .header-text h1 {
+      font-size: 15px;
+      font-weight: 700;
+      color: #5c2d3e;
+    }
+
+    .header-text p {
+      font-size: 12px;
+      color: #9e5a6e;
+      margin-top: 1px;
+    }
+
+    .header-deco {
+      margin-left: auto;
+      font-size: 22px;
+      opacity: 0.6;
+    }
+
+    /* ── disqus container ── */
+    main {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 2rem 1.25rem 4rem;
+    }
+
+    #disqus_thread a { color: #ff2658 !important; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a class="back-btn" href="javascript:history.back()" aria-label="Go back">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-caret-left-fill" viewBox="0 0 16 16">
+        <path d="m3.86 8.753 5.482 4.796c.646.566 1.658.106 1.658-.753V3.204a1 1 0 0 0-1.659-.753l-5.48 4.796a1 1 0 0 0 0 1.506z"/>
+      </svg>
+    </a>
+    <div class="header-text">
+      <h1 id="ep-title">BABBLE!!!</h1>
+      <p>Dossier Lulu</p>
+    </div>
+    <span class="header-deco">🌸</span>
+  </header>
+
+  <main>
+    <div id="disqus_thread"></div>
+  </main>
+
+  <script>
+    // set episode title in header if coming from a specific episode
+    const ep = new URLSearchParams(window.location.search).get('ep');
+    if (ep) {
+      fetch('episodes.json')
+        .then(r => r.json())
+        .then(episodes => {
+          const found = episodes.find(e => e.id === parseInt(ep));
+          if (found) {
+            document.getElementById('ep-title').textContent = 'Comment on ' + found.title;
+            document.title = 'Comment on ' + found.title;
+          }
+        })
+        .catch(() => {});
+    }
+
+    // disqus
+    var disqus_config = function () {
+      const epId = ep || '1';
+      this.page.url = 'https://real-mercus.github.io/MercsGrotto/comments.html?ep=' + epId;
+      this.page.identifier = 'episode-' + epId;
+    };
+
+    (function() {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://mercsgrotto.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
+  </script>
+
+  <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <script id="dsq-count-scr" src="//mercsgrotto.disqus.com/count.js" async></script>
+
+</body>
+</html>
