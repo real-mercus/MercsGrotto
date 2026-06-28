@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Merc's Grotto</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #111;
+      color: #fff;
+      font-family: sans-serif;
+      /* leave room for the two fixed bars */
+      padding-top: 52px;
+      padding-bottom: 52px;
+    }
+
+    .hud-bar {
+        transition: opacity 0.2s ease;
+      }
+
+    /* ── comic strip ── */
+    #comic {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    #comic img {
+      width: 100%;
+      display: block;
+    }
+
+    /* loading / error states */
+    #status {
+      text-align: center;
+      padding: 4rem 1rem;
+      color: #888;
+      font-size: 14px;
+    }
+
+    /* ── HUD bars ── */
+    .hud-bar {
+      position: fixed;
+      left: 0; right: 0;
+      height: 52px;
+      background: #1a1a1a;
+      display: flex;
+      align-items: center;
+      padding: 0 12px;
+      z-index: 1000;
+    }
+    .hud-bar.top    { top: 0;    justify-content: space-between; }
+    .hud-bar.bottom { bottom: 0; justify-content: space-between; }
+
+    .hud-btn {
+      display: flex; align-items: center; justify-content: center;
+      color: #fff;
+      background: none;
+      border: none;
+      width: 40px; height: 40px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 22px;
+      text-decoration: none;
+      transition: background 0.15s;
+    }
+    .hud-btn:hover { background: rgba(255,255,255,0.12); }
+    .hud-btn:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+
+    .hud-btn.comment {
+      width: auto;
+      padding: 0 12px;
+      gap: 6px;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .hud-btn.disabled {
+      opacity: 0.25;
+      pointer-events: none;
+    }
+
+    .nav-pair { display: flex; gap: 4px; }
+
+    #ep-title {
+      font-size: 13px;
+      color: #aaa;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 200px;
+    }
+
+    /* ── side panel ── */
+    #side-panel {
+      position: fixed;
+      top: 0; right: 0; bottom: 0;
+      width: 260px;
+      background: #111;
+      border-left: 1px solid #2a2a2a;
+      padding: 64px 1.25rem 1.25rem;
+      z-index: 1100;
+      transform: translateX(100%);
+      transition: transform 0.25s ease;
+      overflow-y: auto;
+    }
+    #side-panel.open { transform: translateX(0); }
+
+    #panel-close {
+      position: absolute;
+      top: 14px; right: 14px;
+      background: none; border: none;
+      color: #aaa; font-size: 22px;
+      cursor: pointer; line-height: 1;
+    }
+    #panel-close:hover { color: #fff; }
+
+    #panel-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 16px;
+    }
+
+    #episode-list { list-style: none; }
+
+    #episode-list li a {
+      display: block;
+      color: #bbb;
+      text-decoration: none;
+      padding: 10px 0;
+      border-bottom: 1px solid #222;
+      font-size: 14px;
+      transition: color 0.1s;
+    }
+    #episode-list li a:hover  { color: #fff; }
+    #episode-list li a.active { color: #fff; font-weight: 600; }
+
+    /* overlay to close panel by clicking outside */
+    #overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 1050;
+    }
+    #overlay.visible { display: block; }
+  </style>
+</head>
+<body>
+
+  <!-- TOP BAR -->
+  <div class="hud-bar top">
+    <a class="hud-btn" href="index.html" aria-label="Back to home">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-caret-left-fill" viewBox="0 0 16 16">
+        <path d="m3.86 8.753 5.482 4.796c.646.566 1.658.106 1.658-.753V3.204a1 1 0 0 0-1.659-.753l-5.48 4.796a1 1 0 0 0 0 1.506z"/>
+      </svg>
+    </a>
+    <span id="ep-title"></span>
+    <button class="hud-btn" id="hamburger-btn" aria-label="Open menu">&#9776;</button>
+  </div>
+
+  <!-- COMIC CONTENT -->
+  <main id="comic">
+    <div id="status">Loading episode…</div>
+  </main>
+
+  <!-- BOTTOM BAR -->
+  <div class="hud-bar bottom">
+    <a class="hud-btn comment" id="comments-btn" href="#" aria-label="Comments">
+      <!-- bubble icon -->
+       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chat-left-dots-fill" viewBox="0 0 16 16">
+        <path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H4.414a1 1 0 0 0-.707.293L.854 15.146A.5.5 0 0 1 0 14.793zm5 4a1 1 0 1 0-2 0 1 1 0 0 0 2 0m4 0a1 1 0 1 0-2 0 1 1 0 0 0 2 0m3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2"/>
+      </svg>
+      <span id="comment-count">Babble</span>
+    </a>
+    <div class="nav-pair">
+      <a class="hud-btn" id="prev-btn" href="#" aria-label="Previous episode">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-caret-left-fill" viewBox="0 0 16 16">
+          <path d="m3.86 8.753 5.482 4.796c.646.566 1.658.106 1.658-.753V3.204a1 1 0 0 0-1.659-.753l-5.48 4.796a1 1 0 0 0 0 1.506z"/>
+        </svg>
+      </a>
+      <a class="hud-btn" id="next-btn" href="#" aria-label="Next episode">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-caret-right-fill" viewBox="0 0 16 16">
+          <path d="m12.14 8.753-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 0 1 1.659-.753l5.48 4.796a1 1 0 0 1 0 1.506z"/>
+        </svg>
+      </a>
+    </div>
+  </div>
+
+  <!-- OVERLAY (click outside to close panel) -->
+  <div id="overlay"></div>
+
+  <!-- SIDE PANEL -->
+  <div id="side-panel" role="navigation" aria-label="Episode list">
+    <button id="panel-close" aria-label="Close menu">&#10005;</button>
+    <div id="panel-title">Dossier Lulu</div>
+    <ul id="episode-list"></ul>
+  </div>
+
+  <script>
+    // ── HUD display on click ──────────────────────────────────
+    let hudVisible = true;
+    const bars = document.querySelectorAll('.hud-bar');
+    
+    document.addEventListener('click', (e) => {
+    // don't toggle if clicking a HUD button or the side panel
+    if (e.target.closest('.hud-bar') || e.target.closest('#side-panel')) return;
+    
+    hudVisible = !hudVisible;
+    bars.forEach(bar => bar.style.opacity = hudVisible ? '1' : '0');
+    bars.forEach(bar => bar.style.pointerEvents = hudVisible ? '' : 'none');
+  });
+    
+    // ── helpers ──────────────────────────────────────────────
+    function getEpId() {
+      const params = new URLSearchParams(window.location.search);
+      return parseInt(params.get('ep'), 10) || 1;
+    }
+
+    function goTo(id) {
+      window.location.href = 'episode.html?ep=' + id;
+    }
+
+    // ── panel toggle ─────────────────────────────────────────
+    const panel    = document.getElementById('side-panel');
+    const overlay  = document.getElementById('overlay');
+    const hamburger = document.getElementById('hamburger-btn');
+    const panelClose = document.getElementById('panel-close');
+
+    function openPanel()  { panel.classList.add('open');    overlay.classList.add('visible'); }
+    function closePanel() { panel.classList.remove('open'); overlay.classList.remove('visible'); }
+
+    hamburger.addEventListener('click', openPanel);
+    panelClose.addEventListener('click', closePanel);
+    overlay.addEventListener('click', closePanel);
+
+    // ── load episodes.json and render ────────────────────────
+    fetch('episodes.json')
+      .then(r => r.json())
+      .then(episodes => {
+        const currentId = getEpId();
+        const ep = episodes.find(e => e.id === currentId);
+
+        if (!ep) {
+          document.getElementById('status').textContent = 'Episode not found.';
+          return;
+        }
+
+        // page title
+        document.title = ep.title + ' — Merc\'s Grotto';
+        document.getElementById('ep-title').textContent = ep.title;
+
+        // comments link
+        document.getElementById('comments-btn').href = ep.commentsUrl || '#';
+
+        // prev / next
+        const prevEp = episodes.find(e => e.id === currentId - 1);
+        const nextEp = episodes.find(e => e.id === currentId + 1);
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+
+        if (prevEp) {
+          prevBtn.href = 'episode.html?ep=' + prevEp.id;
+        } else {
+          prevBtn.classList.add('disabled');
+          prevBtn.removeAttribute('href');
+        }
+
+        if (nextEp) {
+          nextBtn.href = 'episode.html?ep=' + nextEp.id;
+        } else {
+          nextBtn.classList.add('disabled');
+          nextBtn.removeAttribute('href');
+        }
+
+        // build episode list in side panel
+        const list = document.getElementById('episode-list');
+        episodes.forEach(e => {
+          const li = document.createElement('li');
+          const a  = document.createElement('a');
+          a.href = 'episode.html?ep=' + e.id;
+          a.textContent = 'Ep. ' + e.id + ' — ' + e.title;
+          if (e.id === currentId) a.classList.add('active');
+          li.appendChild(a);
+          list.appendChild(li);
+        });
+
+        // render comic pages
+        const comic  = document.getElementById('comic');
+        const status = document.getElementById('status');
+        status.remove();
+
+        ep.pages.forEach((url, i) => {
+          const img = document.createElement('img');
+          img.src = url;
+          img.alt = ep.title + ' — page ' + (i + 1);
+          img.loading = i < 3 ? 'eager' : 'lazy'; // first 3 load immediately, rest lazy
+          comic.appendChild(img);
+        });
+      })
+      .catch(() => {
+        document.getElementById('status').textContent =
+          'Could not load episode data. Check that episodes.json is in the same folder.';
+      });
+  </script>
+</body>
+</html>
